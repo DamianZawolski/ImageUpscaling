@@ -1,11 +1,7 @@
 import cv2
 import os
 import PySimpleGUI as sg
-from PIL import Image
 import numpy as np
-
-file_types = [("JPEG (*.jpg)", "*.jpg"),
-              ("All files (*.*)", "*.*")]
 
 def filtr_splotowy(zdjecie, kernel):
     # Cross Correlation
@@ -45,7 +41,7 @@ layout = [
     [
         sg.Text("Plik ze zdjęciem"),
         sg.Input(size=(25, 1), key="-FILE-"),
-        sg.FileBrowse("Wybierz zdjęcie", file_types=file_types),
+        sg.FileBrowse("Wybierz zdjęcie", file_types=[("All files (*.*)", "*.*")]),
         sg.Button("Wyostrz"),
     ],
 ]
@@ -58,25 +54,21 @@ while True:
         break
     if zdarzenie == "Wyostrz":
         nazwa_pliku = wartosci["-FILE-"].split("/")[-1]
-        print(nazwa_pliku)
         print(f"Wyostrzany plik to: {nazwa_pliku}")
         if os.path.exists(nazwa_pliku):
             zdjecie = cv2.imread(nazwa_pliku)
             zdjecie = cv2.cvtColor(src=zdjecie, code=cv2.COLOR_BGR2GRAY)
             cv2.imshow('Oryginalne zdjecie', zdjecie)
 
-            kernel = np.array([[0, -1, 0],
-                               [-1, 5, -1],
-                               [0, -1, 0]])
+            # Łagodniejsze wyostrzenie
+            # kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+            # Mocniejsze wyostrzenie
+            kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
 
             wyostrzone_cv2 = cv2.filter2D(src=zdjecie, ddepth=-1, kernel=kernel)
             cv2.imwrite("CV2.png", wyostrzone_cv2)
             cv2.imshow('Zdjecie wyostrzone przy pomocy pakietu CV2', wyostrzone_cv2)
 
-            # Jądro wyostrzania
-            kernel = np.array([[0, -1, 0],
-                               [-1, 5, -1],
-                               [0, -1, 0]])
             cv2.imshow('Wlasna implementacja', wyostrzone_cv2)
             cv2.imwrite('Splotowy.jpg', filtr_splotowy(zdjecie, kernel))
             cv2.waitKey()
