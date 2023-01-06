@@ -3,18 +3,6 @@ import os
 import PySimpleGUI as sg
 import numpy as np
 
-def unsharp_mask(image, kernel_size=(5, 5), sigma=1.0, amount=1.0, threshold=0):
-    """Return a sharpened version of the image, using an unsharp mask."""
-    blurred = cv2.GaussianBlur(image, kernel_size, sigma)
-    sharpened = float(amount + 1) * image - float(amount) * blurred
-    sharpened = np.maximum(sharpened, np.zeros(sharpened.shape))
-    sharpened = np.minimum(sharpened, 255 * np.ones(sharpened.shape))
-    sharpened = sharpened.round().astype(np.uint8)
-    if threshold > 0:
-        low_contrast_mask = np.absolute(image - blurred) < threshold
-        np.copyto(sharpened, image, where=low_contrast_mask)
-    return sharpened
-
 def filtr_splotowy(zdjecie, kernel):
     # Cross Correlation
     kernel = np.flipud(np.fliplr(kernel))
@@ -50,10 +38,6 @@ def filtr_splotowy(zdjecie, kernel):
     wyjscie = (a * wyjscie + b).astype(np.uint8)
     return wyjscie
 
-
-
-
-
 layout = [
     [sg.Image(key="-IMAGE-")],
     [
@@ -79,19 +63,15 @@ while True:
             cv2.imshow('Oryginalne zdjecie', zdjecie)
 
             # Łagodniejsze wyostrzenie
-            #kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+            kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
             # Mocniejsze wyostrzenie
-            kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+            #kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
 
             wlasna_implementacja = filtr_splotowy(zdjecie, kernel)
-            print(wlasna_implementacja)
-            print(type(wlasna_implementacja[0][0]))
-            cv2.imwrite('Splotowy.png', wlasna_implementacja)
+            cv2.imwrite('WlasnaImplementacja.png', wlasna_implementacja)
             cv2.imshow('Wlasna implementacja', wlasna_implementacja)
 
             wyostrzone_cv2 = cv2.filter2D(src=zdjecie, ddepth=-1, kernel=kernel)
-            print(wyostrzone_cv2)
-            print(type(wyostrzone_cv2[0][0]))
             cv2.imwrite("CV2.png", wyostrzone_cv2)
             cv2.imshow('Zdjecie wyostrzone przy pomocy pakietu CV2', wyostrzone_cv2)
 
