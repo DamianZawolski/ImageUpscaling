@@ -9,13 +9,11 @@ def filtr_splotowy(zdjecie, kernel):
     y_kernel = kernel.shape[1]
     x_zdjecie = zdjecie.shape[0]
     y_zdjecie = zdjecie.shape[1]
-
     x_wyjscie = int((x_zdjecie - x_kernel) + 1)
     y_wejscie = int((y_zdjecie - y_kernel) + 1)
     wyjscie = np.zeros((x_wyjscie, y_wejscie))
 
     for y in range(zdjecie.shape[1]):
-
         if y > zdjecie.shape[1] - y_kernel:
             break
         for x in range(zdjecie.shape[0]):
@@ -23,12 +21,11 @@ def filtr_splotowy(zdjecie, kernel):
                 break
             try:
                 wyjscie[x, y] = int((kernel * zdjecie[x: x + x_kernel, y: y + y_kernel]).sum())
-
             except:
                 break
+
     imin = wyjscie.min()
     imax = wyjscie.max()
-
     a = (255 - 0) / (imax - imin)
     b = 255 - a * imax
     wyjscie = (a * wyjscie + b).astype(np.uint8)
