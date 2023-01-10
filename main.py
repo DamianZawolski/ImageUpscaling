@@ -4,25 +4,21 @@ import PySimpleGUI as sg
 import numpy as np
 
 def filtr_splotowy(zdjecie, kernel):
-    # Cross Correlation
     kernel = np.flipud(np.fliplr(kernel))
     x_kernel = kernel.shape[0]
     y_kernel = kernel.shape[1]
     x_zdjecie = zdjecie.shape[0]
     y_zdjecie = zdjecie.shape[1]
 
-    # Shape of Output Convolution
     x_wyjscie = int((x_zdjecie - x_kernel) + 1)
     y_wejscie = int((y_zdjecie - y_kernel) + 1)
     wyjscie = np.zeros((x_wyjscie, y_wejscie))
 
     for y in range(zdjecie.shape[1]):
-        # Exit Convolution
+
         if y > zdjecie.shape[1] - y_kernel:
             break
-        # Only Convolve if y has gone down by the specified Strides
         for x in range(zdjecie.shape[0]):
-            # Go to next row once kernel is out of bounds
             if x > zdjecie.shape[0] - x_kernel:
                 break
             try:
