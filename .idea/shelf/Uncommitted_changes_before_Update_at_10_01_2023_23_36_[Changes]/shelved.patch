@@ -1,0 +1,86 @@
+Index: main.py
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+>print()
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/main.py b/main.py
+--- a/main.py	(revision a9f4242b149f1c6248d0e288fb1b7d097737818e)
++++ b/main.py	(date 1671560533162)
+@@ -1,1 +1,21 @@
+-print()
+\ No newline at end of file
++from PIL import Image
++import cv2
++
++
++# Open the image
++im = Image.open('img.png')
++
++# Upscale the image by a factor of 2
++im_upscaled = im.resize((im.width*2, im.height*2), resample=Image.BICUBIC)
++
++# Save the upscaled image
++im_upscaled.save('2xres_noUpscaling.jpg')
++
++# Read the image
++imcv2 = cv2.imread('input.jpg')
++
++# Upscale the image by a factor of 2 using self-similarity
++imcv2_upscaled = cv2.resize(imcv2, None, fx=2, fy=2, interpolation=cv2.INTER_NEAREST)
++
++# Save the upscaled image
++cv2.imwrite('output.jpg', imcv2_upscaled)
+Index: .idea/.gitignore
+===================================================================
+diff --git a/.idea/.gitignore b/.idea/.gitignore
+deleted file mode 100644
+--- a/.idea/.gitignore	(revision a9f4242b149f1c6248d0e288fb1b7d097737818e)
++++ /dev/null	(revision a9f4242b149f1c6248d0e288fb1b7d097737818e)
+@@ -1,8 +0,0 @@
+-# Default ignored files
+-/shelf/
+-/workspace.xml
+-# Editor-based HTTP Client requests
+-/httpRequests/
+-# Datasource local storage ignored files
+-/dataSources/
+-/dataSources.local.xml
+Index: .idea/misc.xml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<project version=\"4\">\r\n  <component name=\"ProjectRootManager\" version=\"2\" project-jdk-name=\"Python 3.9 (ImageUpscaling)\" project-jdk-type=\"Python SDK\" />\r\n</project>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/misc.xml b/.idea/misc.xml
+--- a/.idea/misc.xml	(revision a9f4242b149f1c6248d0e288fb1b7d097737818e)
++++ b/.idea/misc.xml	(date 1673390174946)
+@@ -1,4 +1,4 @@
+ <?xml version="1.0" encoding="UTF-8"?>
+ <project version="4">
+-  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9 (ImageUpscaling)" project-jdk-type="Python SDK" />
++  <component name="ProjectRootManager" version="2" project-jdk-name="Python 3.9" project-jdk-type="Python SDK" />
+ </project>
+\ No newline at end of file
+Index: .idea/ImageUpscaling.iml
+IDEA additional info:
+Subsystem: com.intellij.openapi.diff.impl.patch.BaseRevisionTextPatchEP
+<+><?xml version=\"1.0\" encoding=\"UTF-8\"?>\r\n<module type=\"PYTHON_MODULE\" version=\"4\">\r\n  <component name=\"NewModuleRootManager\">\r\n    <content url=\"file://$MODULE_DIR$\">\r\n      <excludeFolder url=\"file://$MODULE_DIR$/venv\" />\r\n    </content>\r\n    <orderEntry type=\"inheritedJdk\" />\r\n    <orderEntry type=\"sourceFolder\" forTests=\"false\" />\r\n  </component>\r\n</module>
+Subsystem: com.intellij.openapi.diff.impl.patch.CharsetEP
+<+>UTF-8
+===================================================================
+diff --git a/.idea/ImageUpscaling.iml b/.idea/ImageUpscaling.iml
+--- a/.idea/ImageUpscaling.iml	(revision a9f4242b149f1c6248d0e288fb1b7d097737818e)
++++ b/.idea/ImageUpscaling.iml	(date 1673390174939)
+@@ -4,7 +4,7 @@
+     <content url="file://$MODULE_DIR$">
+       <excludeFolder url="file://$MODULE_DIR$/venv" />
+     </content>
+-    <orderEntry type="inheritedJdk" />
++    <orderEntry type="jdk" jdkName="Python 3.9" jdkType="Python SDK" />
+     <orderEntry type="sourceFolder" forTests="false" />
+   </component>
+ </module>
+\ No newline at end of file

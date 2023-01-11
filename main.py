@@ -1,7 +1,7 @@
-import cv2
 import os
-import PySimpleGUI as sg
-import numpy as np
+import PySimpleGUI as Sg
+from interpolacja import *
+
 
 def filtr_splotowy(zdjecie, kernel):
     kernel = np.flipud(np.fliplr(kernel))
@@ -31,21 +31,22 @@ def filtr_splotowy(zdjecie, kernel):
     wyjscie = (a * wyjscie + b).astype(np.uint8)
     return wyjscie
 
+
 layout = [
-    [sg.Image(key="-IMAGE-")],
+    [Sg.Image(key="-IMAGE-")],
     [
-        sg.Text("Plik ze zdjęciem"),
-        sg.Input(size=(25, 1), key="-FILE-"),
-        sg.FileBrowse("Wybierz zdjęcie", file_types=[("All files (*.*)", "*.*")]),
-        sg.Button("Wyostrz"),
+        Sg.Text("Plik ze zdjęciem"),
+        Sg.Input(size=(25, 1), key="-FILE-"),
+        Sg.FileBrowse("Wybierz zdjęcie", file_types=[("All files (*.*)", "*.*")]),
+        Sg.Button("Wyostrz"),
     ],
 ]
 
-okno = sg.Window("Image Upscaler 260353", layout)
+okno = Sg.Window("Image Upscaler 260353", layout)
 
 while True:
     zdarzenie, wartosci = okno.read()
-    if zdarzenie == "Wyjście" or zdarzenie == sg.WIN_CLOSED:
+    if zdarzenie == "Wyjście" or zdarzenie == Sg.WIN_CLOSED:
         break
     if zdarzenie == "Wyostrz":
         nazwa_pliku = wartosci["-FILE-"].split("/")[-1]
@@ -56,9 +57,9 @@ while True:
             cv2.imshow('Oryginalne zdjecie', zdjecie)
 
             # Łagodniejsze wyostrzenie
-            kernel = np.array([[0, -1, 0],[-1, 5, -1],[0, -1, 0]])
+            kernel = np.array([[0, -1, 0], [-1, 5, -1], [0, -1, 0]])
             # Mocniejsze wyostrzenie
-            #kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
+            # kernel = np.array([[-1,-1,-1], [-1,9,-1], [-1,-1,-1]])
 
             wlasna_implementacja = filtr_splotowy(zdjecie, kernel)
             cv2.imwrite('WlasnaImplementacja.png', wlasna_implementacja)
@@ -68,6 +69,15 @@ while True:
             cv2.imwrite("CV2.png", wyostrzone_cv2)
             cv2.imshow('Zdjecie wyostrzone przy pomocy pakietu CV2', wyostrzone_cv2)
 
+            im_lanczos = cv2.resize(wlasna_implementacja,
+                                    (wlasna_implementacja.shape[1] * 2, wlasna_implementacja.shape[0] * 2),
+                                    interpolation=cv2.INTER_LANCZOS4)
+            cv2.imwrite("lanczos.png", im_lanczos)
+            cv2.imshow('Wlasna implementacja + lanczos', im_lanczos)
+
+            dwuliniowa = interpolacja_dwuliniowa('WlasnaImplementacja.png')
+            cv2.imwrite("dwuliniowa.png", dwuliniowa)
+            cv2.imshow('Wlasna implementacja + dwuliniowa', dwuliniowa)
 
             cv2.waitKey()
             cv2.destroyAllWindows()
